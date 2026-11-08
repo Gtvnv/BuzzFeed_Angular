@@ -1,78 +1,75 @@
 import { Component, OnInit } from '@angular/core';
-import quizz_questions from "../../../assets/data/quizz_questions.json"
+
+import quizzData from '../../../assets/data/quizz_questions.json';
+import { Question, Quizz } from '../../models/quizz.model';
 
 @Component({
   selector: 'app-quizz',
   templateUrl: './quizz.component.html',
-  styleUrls: ['./quizz.component.css']
+  styleUrls: ['./quizz.component.css'],
 })
-
 export class QuizzComponent implements OnInit {
+  private readonly quizz = quizzData as Quizz;
 
-  title:string = ""
+  title = '';
 
-  questions:any
-  questionSelected:any
+  questions: Question[] = [];
+  questionSelected!: Question;
 
-  answers:string[] = []
-  answerSelected:string =""
+  answers: string[] = [];
+  answerSelected = '';
 
-  questionIndex:number =0
-  questionMaxIndex:number=0
+  questionIndex = 0;
+  questionMaxIndex = 0;
 
-  finished:boolean = false
-
-  constructor() { }
+  finished = false;
 
   ngOnInit(): void {
-    if(quizz_questions){
-      this.finished = false
-      this.title = quizz_questions.title
+    this.start();
+  }
 
-      this.questions = quizz_questions.questions
-      this.questionSelected = this.questions[this.questionIndex]
+  start(): void {
+    this.title = this.quizz.title;
+    this.questions = this.quizz.questions;
 
-      this.questionIndex = 0
-      this.questionMaxIndex = this.questions.length
+    this.answers = [];
+    this.answerSelected = '';
+    this.questionIndex = 0;
+    this.questionMaxIndex = this.questions.length;
+    this.questionSelected = this.questions[this.questionIndex];
+    this.finished = false;
+  }
 
-      console.log(this.questionIndex)
-      console.log(this.questionMaxIndex)
+  get progress(): number {
+    if (this.questionMaxIndex === 0) {
+      return 0;
+    }
+    return Math.round((this.questionIndex / this.questionMaxIndex) * 100);
+  }
+
+  playerChoose(value: string): void {
+    this.answers.push(value);
+    this.nextStep();
+  }
+
+  private nextStep(): void {
+    this.questionIndex += 1;
+
+    if (this.questionIndex < this.questionMaxIndex) {
+      this.questionSelected = this.questions[this.questionIndex];
+      return;
     }
 
+    const finalAnswer = this.checkResult(this.answers);
+    this.answerSelected = this.quizz.results[finalAnswer];
+    this.finished = true;
   }
 
-  playerChoose(value:string){
-    this.answers.push(value)
-    this.nextStep()
-
+  private checkResult(answers: string[]): string {
+    return answers.reduce((previous, current, _index, arr) => {
+      const previousCount = arr.filter((item) => item === previous).length;
+      const currentCount = arr.filter((item) => item === current).length;
+      return previousCount >= currentCount ? previous : current;
+    });
   }
-
-  async nextStep(){
-    this.questionIndex+=1
-
-    if(this.questionMaxIndex > this.questionIndex){
-        this.questionSelected = this.questions[this.questionIndex]
-    }else{
-      const finalAnswer:string = await this.checkResult(this.answers)
-      this.finished = true
-      this.answerSelected = quizz_questions.results[finalAnswer as keyof typeof quizz_questions.results ]
-    }
-  }
-
-  async checkResult(anwsers:string[]){
-
-    const result = anwsers.reduce((previous, current, i, arr)=>{
-        if(
-          arr.filter(item => item === previous).length >
-          arr.filter(item => item === current).length
-        ){
-          return previous
-        }else{
-          return current
-        }
-    })
-
-    return result
-  }
-
 }

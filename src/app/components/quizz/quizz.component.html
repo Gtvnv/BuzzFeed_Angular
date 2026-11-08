@@ -1,28 +1,40 @@
 <div class="quizz__container">
-
   <div class="quizz_logo">
-    <img src="assets/imgs/logo.png" alt="" srcset="">
-    <h3>{{title}}</h3>
+    <img src="assets/imgs/logo.png" alt="Logo do quizz" />
+    <h3>{{ title }}</h3>
   </div>
 
-  <div *ngIf=!finished class="quizz_questions">
-      <h3>{{questionSelected.question}}</h3>
-  </div>
+  <ng-container *ngIf="!finished; else results">
+    <div class="quizz_progress">
+      <div class="quizz_progress-bar" [style.width.%]="progress"></div>
+    </div>
+    <p class="quizz_counter">
+      Pergunta {{ questionIndex + 1 }} de {{ questionMaxIndex }}
+    </p>
 
-  <div *ngIf=!finished class="quizz_options">
+    <div class="quizz_questions">
+      <h3>{{ questionSelected.question }}</h3>
+    </div>
 
-    <button
-      *ngFor="let option of questionSelected.options; let i = index"
-      (click)="playerChoose(option.alias)"
-      class="btn-option"
-    >
-      {{option.name}}
-    </button>
+    <div class="quizz_options">
+      <button
+        *ngFor="let option of questionSelected.options"
+        (click)="playerChoose(option.alias)"
+        type="button"
+        class="btn-option"
+      >
+        {{ option.name }}
+      </button>
+    </div>
+  </ng-container>
 
-  </div>
-
-  <div *ngIf=finished class="quizz_results">
-    <h1>O Seu resultado é:</h1>
-    <p>{{answerSelected}}</p>
-  </div>
+  <ng-template #results>
+    <div class="quizz_results">
+      <h1>O seu resultado é:</h1>
+      <p>{{ answerSelected }}</p>
+      <button (click)="start()" type="button" class="btn-restart">
+        Refazer o quizz
+      </button>
+    </div>
+  </ng-template>
 </div>

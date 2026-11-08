@@ -1,27 +1,61 @@
-# ProjetoBuzzfeed
+# BuzzFeed Angular Quizz
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.2.
+Um quiz no estilo BuzzFeed construído com Angular 14. O usuário responde a uma
+sequência de perguntas e, ao final, recebe um resultado calculado a partir das
+respostas escolhidas.
 
-## Development server
+## Funcionalidades
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Perguntas e resultados carregados de um arquivo JSON (`src/assets/data/quizz_questions.json`).
+- Barra de progresso e contador de perguntas.
+- Cálculo do resultado com base na alternativa mais escolhida.
+- Botão para refazer o quizz sem recarregar a página.
 
-## Code scaffolding
+## Tecnologias
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- [Angular](https://angular.io/) 14
+- TypeScript (modo `strict`)
+
+## Como rodar
+
+Pré-requisitos: Node.js e o Angular CLI.
+
+```bash
+npm install
+npm start
+```
+
+Acesse `http://localhost:4200/`. A aplicação recarrega automaticamente ao
+alterar os arquivos-fonte.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm run build
+```
 
-## Running unit tests
+Os artefatos são gerados no diretório `dist/`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Testes
 
-## Running end-to-end tests
+```bash
+npm test
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Executa os testes unitários via [Karma](https://karma-runner.github.io).
 
-## Further help
+## Estrutura
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+src/app/
+├── components/quizz/   Componente principal do quizz
+├── pages/home/         Página que hospeda o quizz
+├── models/             Interfaces de tipagem (Quizz, Question, Option)
+└── assets/data/        Perguntas e resultados em JSON
+```
+
+## Personalizando o quizz
+
+Edite `src/assets/data/quizz_questions.json` para mudar título, perguntas,
+alternativas e resultados. Cada alternativa tem um `alias`, e o resultado final
+corresponde ao `alias` mais escolhido.
